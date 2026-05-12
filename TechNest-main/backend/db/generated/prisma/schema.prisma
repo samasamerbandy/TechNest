@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  community_member
+  facility_manager
+  worker
+  admin
+}
+
+enum TicketStatus {
+  pending
+  in_progress
+  resolved
+  closed
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+}
+
+enum Category {
+  electrical
+  plumbing
+  cleaning
+  furniture
+  other
+}
+
+model User {
+  id                Int       @id @default(autoincrement())
+  name              String
+  email             String    @unique
+  password          String
+  role              Role      @default(community_member)
+  isActive          Boolean   @default(true)
+  resetToken        String?
+  resetTokenExpires DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relations
+  submittedTickets Ticket[]       @relation("SubmittedBy")
+  assignedTickets  Ticket[]       @relation("AssignedTo")
+  comments         Comment[]
+  notifications    Notification[]
+  revokedTokens    RevokedToken[]
+}
+
+model Ticket {
+  id          Int            @id @default(autoincrement())
+  title       String
+  description String
+  category    Category
+  status      TicketStatus   @default(pending)
+  priority    TicketPriority @default(medium)
+
+  // Location
+  building   String
+  floor      String
+  roomNumber String
+
+  // Images
+  imageUrl    String? // submitted photo
+  evidenceUrl String? // worker completion photo
+
+  // Relations
+  submittedById Int
+  submittedBy   User @relation("SubmittedBy", fields: [submittedById], references: [id])
+
+  assignedToId Int?
+  assignedTo   User? @relation("AssignedTo", fields: [assignedToId], references: [id])
+
+  // Merged tickets (self-relation)
+  mergedIntoId  Int?
+  mergedInto    Ticket?  @relation("MergedTickets", fields: [mergedIntoId], references: [id])
+  mergedTickets Ticket[] @relation("MergedTickets")
+
+  comments      Comment[]
+  notifications Notification[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  ticketId  Int
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  isRead    Boolean  @default(false)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  ticketId  Int?
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id])
+  createdAt DateTime @default(now())
+}
+
+model RevokedToken {
+  id        Int      @id @default(autoincrement())
+  token     String
+  userId    Int?
+  user      User?    @relation(fields: [userId], references: [id])
+  revokedAt DateTime @default(now())
+}
