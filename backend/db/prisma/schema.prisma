@@ -1,0 +1,108 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                Int            @id @default(autoincrement())
+  name              String
+  email             String         @unique
+  password          String
+  role              Role           @default(community_member)
+  isActive          Boolean        @default(true)
+  resetToken        String?
+  resetTokenExpires DateTime?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  comments          Comment[]
+  notifications     Notification[]
+  revokedTokens     RevokedToken[]
+  assignedTickets   Ticket[]       @relation("AssignedTo")
+  submittedTickets  Ticket[]       @relation("SubmittedBy")
+}
+
+model Ticket {
+  id            Int            @id @default(autoincrement())
+  title         String
+  description   String
+  category      Category
+  status        TicketStatus   @default(pending)
+  priority      TicketPriority @default(medium)
+  building      String
+  floor         String
+  roomNumber    String
+  imageUrl      String?
+  evidenceUrl   String?
+  submittedById Int
+  assignedToId  Int?
+  mergedIntoId  Int?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  comments      Comment[]
+  notifications Notification[]
+  assignedTo    User?          @relation("AssignedTo", fields: [assignedToId], references: [id])
+  mergedInto    Ticket?        @relation("MergedTickets", fields: [mergedIntoId], references: [id])
+  mergedTickets Ticket[]       @relation("MergedTickets")
+  submittedBy   User           @relation("SubmittedBy", fields: [submittedById], references: [id])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  ticketId  Int
+  authorId  Int
+  createdAt DateTime @default(now())
+  author    User     @relation(fields: [authorId], references: [id])
+  ticket    Ticket   @relation(fields: [ticketId], references: [id])
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  isRead    Boolean  @default(false)
+  userId    Int
+  ticketId  Int?
+  createdAt DateTime @default(now())
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model RevokedToken {
+  id        Int      @id @default(autoincrement())
+  token     String
+  userId    Int?
+  revokedAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  community_member
+  facility_manager
+  worker
+  admin
+}
+
+enum TicketStatus {
+  pending
+  in_progress
+  resolved
+  closed
+}
+
+enum TicketPriority {
+  low
+  medium
+  high
+}
+
+enum Category {
+  electrical
+  plumbing
+  cleaning
+  furniture
+  other
+}
