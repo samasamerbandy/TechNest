@@ -3,6 +3,9 @@
 |Member|Role|
 |-|-|
 |Miriam|Project Lead \& Backend Authentication|
+|Zeina Fahim|Frontend Screens \& UI Flow..|
+|Sama Samer|UI Design \& Styling|
+|Nada|Backend API \& Ticket Controller|
 |Zeina Fahim|Frontend Screens \& UI Flow|
 |Sama Samer|UI Design \& Styling|
 |Nada|Backend API \& Ticket Controller...|
