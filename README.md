@@ -1,4 +1,3 @@
-[README.md](https://github.com/user-attachments/files/27629356/README.md)
 # TechNest – A Mobile Application for Facility Management
 
 ## Team Members
@@ -15,6 +14,169 @@
 | Mariam Youssry | 13007410 | Member |
 
 Tutorial Group 6 | Hassan Osama
+
+---
+
+## Overview
+
+TechNest is a campus issue reporting and maintenance tracking mobile application. It includes:
+
+- `backend/` — Express API with authentication, ticket management, notifications, and Prisma database logic
+- `frontend/` — Expo React Native app for members, managers, and workers
+- `prisma/` — Prisma schema and database configuration
+
+---
+
+## Prerequisites
+
+- Node.js 18+ or compatible version
+- npm
+- Git
+- Optional: Expo CLI globally installed with `npm install -g expo-cli`
+
+---
+
+## Backend Setup
+
+1. Open a terminal and go to the backend folder:
+
+```bash
+cd backend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Create a `.env` file in `backend/` with the following values:
+
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=7d
+COOKIE_SECRET=your_cookie_secret
+CLIENT_URL=http://localhost:19006
+PORT=5000
+NODE_ENV=development
+```
+
+4. Generate the Prisma client and run migrations:
+
+```bash
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+```
+
+5. Start the backend server:
+
+```bash
+npm run dev
+```
+
+The backend will be available at `http://localhost:5000`.
+
+---
+
+## Frontend Setup
+
+1. Open a new terminal and go to the frontend folder:
+
+```bash
+cd frontend
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. **Update the IP address for your machine** (see section below).
+
+4. Start the Expo app:
+
+```bash
+npx expo start --clear
+```
+
+Then follow the Expo prompts to open on a simulator, device, or browser.
+
+---
+
+## ⚠️ Important: IP Address Configuration
+
+> **The IP address will be different on every laptop.** Each team member must update the frontend API URL to match their own machine's local IP before running the project.
+
+### Step 1 — Find your IP address
+
+- **Windows:** Open Command Prompt → type `ipconfig` → look for **WiFi IPv4 Address**
+- **Mac/Linux:** Run `ipconfig getifaddr en0` in Terminal
+
+### Step 2 — Update the frontend API file
+
+Open `frontend/src/api/axiosInstance.js` and update the `baseURL`:
+
+```js
+baseURL: 'http://YOUR_IP_HERE:5000',
+```
+
+**Example:**
+```js
+baseURL: 'http://192.168.1.45:5000',
+```
+
+> Replace `192.168.1.45` with your actual IP address every time you switch machines or networks.
+
+---
+
+## Running the App
+
+Run both backend and frontend at the same time in two separate terminals:
+
+**Terminal 1 (Backend):**
+```bash
+cd backend
+npm run dev
+```
+
+**Terminal 2 (Frontend):**
+```bash
+cd frontend
+npx expo start --clear
+```
+
+---
+
+## Environment Variables
+
+Required backend variables in your `.env` file:
+
+| Variable | Description |
+|---|---|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `JWT_SECRET` | Secret key for JWT tokens |
+| `JWT_EXPIRES_IN` | Token expiry duration (e.g. `7d`) |
+| `COOKIE_SECRET` | Secret for cookie signing |
+| `CLIENT_URL` | Frontend URL (e.g. `http://localhost:19006`) |
+| `PORT` | Backend port (default: `5000`) |
+| `NODE_ENV` | Environment (`development` or `production`) |
+
+---
+
+## Git Workflow
+
+To get the latest changes from main into your branch:
+
+```bash
+git fetch --all --prune
+git checkout your-branch-name
+git merge origin/main
+```
+
+If the `frontend/` folder is missing locally, syncing with `origin/main` should restore it.
 
 ---
 
@@ -204,9 +366,10 @@ The aim is to create a mobile application that is a fast, reliable and transpare
 
 ## 6. Technology Stack
 
-- **Frontend:** React Native
-- **Backend:** Node.js
+- **Frontend:** React Native (Expo)
+- **Backend:** Node.js (Express)
 - **Database:** PostgreSQL
+- **ORM:** Prisma
 
 ---
 
