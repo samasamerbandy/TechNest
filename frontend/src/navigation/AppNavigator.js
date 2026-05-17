@@ -11,6 +11,7 @@ import RegisterScreen from "../screens/auth/RegisterScreen";
 import MemberNavigator from "./MemberNavigator";
 import ManagerNavigator from "./ManagerNavigator";
 import WorkerNavigator from "./WorkerNavigator";
+import AdminNavigator from "./AdminNavigator";
 
 const Stack = createStackNavigator();
 
@@ -46,6 +47,8 @@ export default function AppNavigator() {
   <ManagerNavigator />
       ) : user.role === "worker" ? (
         <WorkerNavigator />
+      ) : user.role === "admin" ? (
+        <AdminNavigator />
       ) : (
         <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
           <Text style={{ color: "#EF4444" }}>
