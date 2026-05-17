@@ -29,4 +29,6 @@
 | Alya Mandour | Testing & Bug Fixes |
 | Zeina Hesham | Navigation & Screen Routing |
 | Nadine Elhaga | Documentation & SRS |
+| Mariam Yousry | Deployment & Environment Setup |
+
 | Mariam Yousry | Deployment & Environment Setup | .
